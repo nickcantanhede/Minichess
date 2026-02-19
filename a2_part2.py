@@ -57,6 +57,20 @@ def generate_complete_game_tree(root_move: str, game_state: a2_minichess.Miniche
     likely take a very long time on your computer.
     """
 
+    game_tree = a2_game_tree.GameTree(root_move, game_state.is_white_move(),
+                                      1.0 if game_state.get_winner() == 'White' else 0.0)
+    if d == 0:
+        return game_tree
+    else:
+        valid_moves = game_state.get_valid_moves()
+
+        for move in valid_moves:
+            copy_game = game_state.copy_and_make_move(move)
+            child = generate_complete_game_tree(move, copy_game, d - 1)
+            game_tree.add_subtree(child)
+
+        return game_tree
+
 
 class GreedyTreePlayer(a2_minichess.Player):
     """A Minichess player that plays greedily based on a given GameTree.

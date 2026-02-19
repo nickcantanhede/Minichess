@@ -33,13 +33,16 @@ class GameTree:
       - move: the current chess move (expressed in chess notation), or '*' if this tree
               represents the start of a game
       - is_white_move: True if White is to make the next move after this, False otherwise
+      - white_win_probability: the probability that White will win from the current state of the game
 
     Representation Invariants:
         - self.move == GAME_START_MOVE or self.move is a valid Minichess move
         - self.move != GAME_START_MOVE or self.is_white_move == True
+        - 0 <= self.white_win_probability <= 1
     """
     move: str
     is_white_move: bool
+    white_win_probability: float
 
     # Private Instance Attributes:
     #  - _subtrees:
@@ -48,7 +51,7 @@ class GameTree:
     _subtrees: list[GameTree]
 
     def __init__(self, move: str = GAME_START_MOVE,
-                 is_white_move: bool = True) -> None:
+                 is_white_move: bool = True, white_win_probability: float = 0.0) -> None:
         """Initialize a new game tree.
 
         Note that this initializer uses optional arguments, as illustrated below.
@@ -62,6 +65,7 @@ class GameTree:
         self.move = move
         self.is_white_move = is_white_move
         self._subtrees = []
+        self.white_win_probability = white_win_probability
 
     def get_subtrees(self) -> list[GameTree]:
         """Return the subtrees of this game tree."""
@@ -81,6 +85,7 @@ class GameTree:
     def add_subtree(self, subtree: GameTree) -> None:
         """Add a subtree to this game tree."""
         self._subtrees.append(subtree)
+        self._update_white_win_probability()
 
     def __str__(self) -> str:
         """Return a string representation of this tree.
@@ -108,7 +113,7 @@ class GameTree:
     ############################################################################
     # Part 1: Loading and "Replaying" Minichess games
     ############################################################################
-    def insert_move_sequence(self, moves: list[str]) -> None:
+    def insert_move_sequence(self, moves: list[str], white_win_probability: float = 0.0) -> None:
         """Insert the given sequence of moves into this tree.
 
         The inserted moves form a chain of descendants, where:
@@ -137,18 +142,26 @@ class GameTree:
                  when the function ends!
         """
 
-        def _insert_from(node: GameTree, i: int) -> None:
+        def _insert_from(node: GameTree, i: int) -> bool:
             """Insert moves starting at index i beneath node."""
             if i == len(moves):
-                return
+                return False
 
+            created_here = False
             curr_move = moves[i]
             curr_subtree = node.find_subtree_by_move(curr_move)
             if curr_subtree is None:
-                curr_subtree = GameTree(curr_move, not node.is_white_move)
+                curr_subtree = GameTree(curr_move, not node.is_white_move, white_win_probability)
+                created_here = True
                 node.add_subtree(curr_subtree)
 
-            _insert_from(curr_subtree, i + 1)
+            created_below = _insert_from(curr_subtree, i + 1)
+            created_any = created_here or created_below
+
+            if created_any:
+                node._update_white_win_probability()
+
+            return created_any
 
         _insert_from(self, 0)
 
@@ -170,6 +183,15 @@ class GameTree:
             - if self is not a leaf and self.is_white_move is False, the white win probability
               is equal to the AVERAGE of the white win probabilities of its subtrees
         """
+
+        if self._subtrees == []:
+            return
+        elif self._subtrees != [] and self.is_white_move:
+            self.white_win_probability = max(subtree.white_win_probability
+                                             for subtree in self._subtrees)
+        elif self._subtrees != [] and not self.is_white_move:
+            self.white_win_probability = sum(subtree.white_win_probability for subtree
+                                             in self._subtrees)/len(self._subtrees)
 
 
 if __name__ == '__main__':
