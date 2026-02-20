@@ -21,7 +21,6 @@ This file is Copyright (c) 2026 CSC111 Teaching Team
 """
 import random
 from typing import Optional
-
 import a2_game_tree
 import a2_minichess
 
@@ -101,6 +100,28 @@ class GreedyTreePlayer(a2_minichess.Player):
             - There is at least one valid move for the given game
         """
 
+        if previous_move is not None and self._game_tree is not None:
+            self._game_tree = self._game_tree.find_subtree_by_move(previous_move)
+
+        if self._game_tree is None or self._game_tree.get_subtrees() == []:
+            chosen_move = random.choice(game.get_valid_moves())
+            self._game_tree = None
+            return chosen_move
+
+        if game.is_white_move():
+            max_white_win_probability = max(subtree.white_win_probability for subtree
+                                            in self._game_tree.get_subtrees())
+            chosen_subtree = [subtree for subtree in self._game_tree.get_subtrees()
+                              if subtree.white_win_probability == max_white_win_probability][0]
+        else:
+            min_white_win_probability = min(subtree.white_win_probability for subtree
+                                            in self._game_tree.get_subtrees())
+            chosen_subtree = [subtree for subtree in self._game_tree.get_subtrees()
+                              if subtree.white_win_probability == min_white_win_probability][0]
+
+        self._game_tree = chosen_subtree
+        return chosen_subtree.move
+
 
 def part2_runner(d: int, n: int, white_greedy: bool) -> None:
     """Create a complete game tree with the given depth, and run n games where
@@ -119,17 +140,28 @@ def part2_runner(d: int, n: int, white_greedy: bool) -> None:
           the values for the optional arguments passed to the function.
     """
 
+    game = a2_minichess.MinichessGame()
+    game_tree = generate_complete_game_tree(a2_game_tree.GAME_START_MOVE, game, d)
+    if white_greedy:
+        white = GreedyTreePlayer(game_tree)
+        black = a2_minichess.RandomPlayer()
+    else:
+        white = a2_minichess.RandomPlayer()
+        black = GreedyTreePlayer(game_tree)
+
+    a2_minichess.run_games(n, white, black)
+
 
 if __name__ == '__main__':
     import doctest
     doctest.testmod()
 
-    # import python_ta
-    # python_ta.check_all(config={
-    #     'max-line-length': 120,
-    #     'disable': ['static_type_checker'],
-    #     'extra-imports': ['random', 'a2_minichess', 'a2_game_tree']
-    # })
+    import python_ta
+    python_ta.check_all(config={
+        'max-line-length': 120,
+        'disable': ['static_type_checker'],
+        'extra-imports': ['random', 'a2_minichess', 'a2_game_tree']
+    })
 
     # Sample call to part2_runner (you can change this, just keep it in the main block!)
-    # part2_runner(5, 50, False)
+    # part2_runner(5, 50, True)
