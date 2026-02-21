@@ -6,7 +6,7 @@
 \usepackage[margin=0.75in]{geometry}
 
 \title{CSC111 2026 Assignment 2}
-\author{TODO: FILL IN YOUR NAME HERE}
+\author{Nicolas Miranda Cantanhede}
 \date{\today}
 
 % Some useful LaTeX commands. You are free to use these or not, and also add your own.
@@ -23,9 +23,24 @@
 
 \begin{enumerate}
 
-\item[1.] TODO: your answer for question 1 goes here.
+\item[1.] A player has AT MOST 8 pieces on minichess. They are: \textbf{1 king, 1 queen, 2 rooks and 4 pawns}.
+\begin{itemize}
+    \item A king has at most \textbf{8 possible moves} as it can move to all 8 neighbour squares.
+    \item A rook has at most \textbf{6 possible moves} as it can move 3 squares along its row and 3 along its column
+    \item In a similar manner to the rook, the queen has 6 moves plus at most 5 diagonal moves. This sums up to a total of \textbf{11 possible moves}.
+    \item Finally, the pawn has at most \textbf{3 moves}. 1 for going forward and two for diagonal captures (left and right).
+\end{itemize}
 
-\item[2.] TODO: your answer for question 2 goes here.
+Hence, combining all pieces possible moves, we get:
+$$8 + 2 \cdot 6 + 11 + 4 \cdot 3 = \boxed{43 \,\, \text{possible moves}}$$
+
+
+\item[2.] At depth 0, we only have one possible node in our game tree. \\
+
+At depth 1, each root has at most 43 children (from Q1). Following this same pattern, at depth 2, each of those 43 children have at most 43 children. \\
+
+Since we have a maximum of 50 moves, we can go up to a depth of 50. Hence the upper bound for the total number of nodes is:
+$$43^0 + 43 + 43^2 + 43^3 + 43^4 + \cdots+43^{50} = \dfrac{43^{51} - 1}{43 - 1} = \boxed{\dfrac{43^{51} -1}{42} \,\, \text{nodes}}$$
 
 \end{enumerate}
 \end{document}

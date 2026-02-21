@@ -130,13 +130,13 @@ if __name__ == '__main__':
     import doctest
     doctest.testmod()
 
-    # import python_ta
-    # python_ta.check_all(config={
-    #     'max-line-length': 120,
-    #     'disable': ['static_type_checker'],
-    #     'extra-imports': ['a2_minichess', 'a2_game_tree', 'random', 'csv'],
-    #     'allowed-io': ['load_game_tree']
-    # })
+    import python_ta
+    python_ta.check_all(config={
+        'max-line-length': 120,
+        'disable': ['static_type_checker'],
+        'extra-imports': ['a2_minichess', 'a2_game_tree', 'random', 'csv'],
+        'allowed-io': ['load_game_tree']
+    })
 
     # Sample call to part1_runner (you can change this, just keep it in the main block!)
-    part1_runner('data/white_wins.csv', 50, True)
+    # part1_runner('data/white_wins.csv', 50, True)

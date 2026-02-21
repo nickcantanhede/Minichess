@@ -191,15 +191,15 @@ class GameTree:
                                              for subtree in self._subtrees)
         elif self._subtrees != [] and not self.is_white_move:
             self.white_win_probability = sum(subtree.white_win_probability for subtree
-                                             in self._subtrees)/len(self._subtrees)
+                                             in self._subtrees) / len(self._subtrees)
 
 
 if __name__ == '__main__':
     import doctest
     doctest.testmod()
 
-    # import python_ta
-    # python_ta.check_all(config={
-    #     'max-line-length': 120,
-    #     'disable': ['static_type_checker'],
-    # })
+    import python_ta
+    python_ta.check_all(config={
+        'max-line-length': 120,
+        'disable': ['static_type_checker'],
+    })
