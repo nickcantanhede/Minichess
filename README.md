@@ -32,5 +32,8 @@ I built a tree-based system that:
 ```bash
 python3 a2_part1.py
 python3 a2_part2.py
+```
 
 Remark: Built as part of a CSC111 assignment.
+
+
