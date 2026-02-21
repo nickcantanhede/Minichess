@@ -21,11 +21,25 @@ I built a tree-based system that:
 - `a2.tex` — my written math notes on game-tree growth
 - `data/` — sample game data
 
-## Overall concepts 
+## Overall concepts
 
 - recursive tree construction
 - decision-making from tree statistics
 - handling huge branching processes (combinatorial growth)
+
+## Chessboard visualization
+
+Initial position:
+
+![Initial minichess board](assets/board-initial.png)
+
+After White plays `a2b3`:
+
+![Board after a2b3](assets/board-after-a2b3.png)
+
+After Black replies `b4b3`:
+
+![Board after b4b3](assets/board-after-b4b3.png)
 
 ## Run locally
 
@@ -35,5 +49,3 @@ python3 a2_part2.py
 ```
 
 Remark: Built as part of a CSC111 assignment.
-
-
